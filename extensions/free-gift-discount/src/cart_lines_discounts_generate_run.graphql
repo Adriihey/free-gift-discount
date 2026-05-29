@@ -1,0 +1,22 @@
+query CartLinesDiscountsGenerateRunInput {
+  cart {
+    lines {
+      id
+      quantity
+      cost {
+        subtotalAmount {
+          amount
+        }
+      }
+      merchandise {
+        __typename
+        ... on ProductVariant {
+          id
+        }
+      }
+    }
+  }
+  discount {
+    discountClasses
+  }
+}
