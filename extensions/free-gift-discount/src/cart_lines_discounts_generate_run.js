@@ -20,9 +20,10 @@ const FREE_GIFT_IDS = {
     "gid://shopify/ProductVariant/62532493541725",
   ],
   shorts: [
-    "gid://shopify/ProductVariant/64659950469469",
-    "gid://shopify/ProductVariant/64659950502237",
-    "gid://shopify/ProductVariant/64659950535005",
+    "gid://shopify/ProductVariant/64817081418077",
+    "gid://shopify/ProductVariant/64659950371165",
+    "gid://shopify/ProductVariant/64659950403933",
+    "gid://shopify/ProductVariant/64659950436701",
   ],
 };
 
