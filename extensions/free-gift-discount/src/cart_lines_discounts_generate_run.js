@@ -70,38 +70,52 @@ export function cartLinesDiscountsGenerateRun(input) {
 
   const candidates = [];
 
-  for (const line of input.cart.lines) {
-    if (line.merchandise.__typename !== "ProductVariant") continue;
+  const giftGroups = [
+    {
+      ids: FREE_GIFT_IDS.socks,
+      tier: TIERS.socks,
+    },
+    {
+      ids: FREE_GIFT_IDS.thong,
+      tier: TIERS.thong,
+    },
+    {
+      ids: FREE_GIFT_IDS.shorts,
+      tier: TIERS.shorts,
+    },
+  ];
 
-    const variantId = line.merchandise.id;
+  for (const group of giftGroups) {
+    if (nonGiftSubtotal < group.tier) continue;
 
-    const isSockGift =
-      FREE_GIFT_IDS.socks.includes(variantId) && nonGiftSubtotal >= TIERS.socks;
+    const matchingGiftLines = input.cart.lines.filter((line) => {
+      if (line.merchandise.__typename !== "ProductVariant") return false;
 
-    const isThongGift =
-      FREE_GIFT_IDS.thong.includes(variantId) && nonGiftSubtotal >= TIERS.thong;
+      return group.ids.includes(line.merchandise.id);
+    });
 
-    const isShortsGift =
-      FREE_GIFT_IDS.shorts.includes(variantId) && nonGiftSubtotal >= TIERS.shorts;
+    // If there is more than one gift from the same group,
+    // do not apply our app discount to avoid stacking with Moonbundle.
+    if (matchingGiftLines.length !== 1) continue;
 
-    if (isSockGift || isThongGift || isShortsGift) {
-      candidates.push({
-        message: "Free gift",
-        targets: [
-          {
-            cartLine: {
-              id: line.id,
-              quantity: 1,
-            },
-          },
-        ],
-        value: {
-          percentage: {
-            value: 100,
+    const giftLine = matchingGiftLines[0];
+
+    candidates.push({
+      message: "Free gift",
+      targets: [
+        {
+          cartLine: {
+            id: giftLine.id,
+            quantity: 1,
           },
         },
-      });
-    }
+      ],
+      value: {
+        percentage: {
+          value: 100,
+        },
+      },
+    });
   }
 
   if (!candidates.length) {
